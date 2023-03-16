@@ -40,12 +40,21 @@ spec:
             - containerPort: 5000
           resources: {}
           volumeMounts:
+            - mountPath: /etc/docker/registry/config.yml
+              name: registry-conf
+              subPath: config.yml
             - mountPath: /auth
               name: registry-auth
             - mountPath: /var/lib/registry
               name: registry
       restartPolicy: Always
       volumes:
+        - configMap:
+            items:
+              - key: config.yaml
+                path: config.yml
+            name: registry-conf
+          name: registry-conf
         - name: registry-auth
           secret:
             items:

@@ -18,10 +18,17 @@ services:
       REGISTRY_AUTH_HTPASSWD_REALM: Registry Realm
     volumes:
       - registry:/var/lib/registry
+    configs:
+      - source: registry-conf
+        target: /etc/docker/registry/config.yml
     secrets:
       - source: registry-auth
         target: /auth/htpasswd
+      
 
+configs:
+  registry-conf:
+    file: .raw/config.yaml
 secrets:
   registry-auth:
     file: .raw/htpasswd
