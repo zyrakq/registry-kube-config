@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  registry:
+    restart: always
+    image: registry:2.8.1
+    labels:
+      kompose.controller.type: "statefulset"
+      kompose.volume.size: 15Gi
+      kompose.service.expose: "{{ .Values.host }}"
+      kompose.service.expose.ingress-class-name: "nginx"
+      nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    ports:
+      - 80:5000
+    environment:
+      REGISTRY_AUTH: htpasswd
+      REGISTRY_AUTH_HTPASSWD_PATH: /auth/htpasswd
+      REGISTRY_AUTH_HTPASSWD_REALM: Registry Realm
+    volumes:
+      - registry:/var/lib/registry
+    secrets:
+      - source: registry-auth
+        target: /auth/htpasswd
+
+secrets:
+  registry-auth:
+    file: .raw/htpasswd
+
+volumes:
+  registry:
+    driver: local
