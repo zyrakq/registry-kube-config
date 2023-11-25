@@ -1,6 +1,7 @@
 werf-convert:
-  kompose convert -f docker-compose.yml -o ./.helm/templates;
+  kompose convert -f docker-compose.yml -o ./.helm/templates -n registry;
   rm ./.helm/templates/*-persistentvolumeclaim.yaml;
+  rm ./.helm/templates/*-namespace.yaml;
   find ./.helm/templates -type f -exec sed -i "s/'{{{{ \(.*\) }}'/{{{{ \1 }}/g" {} +;
   mv .helm/templates/*-configmap.yaml .kube;
   mv .helm/templates/*-secret.yaml .kube;
@@ -35,10 +36,9 @@ werf-up:
   werf converge;
 werf-down:
   werf dismiss;
-  
+
 werf-clear:
   werf dismiss;
   kubectl delete namespace keycloak;
   kubectl delete -f registry-pv-0.yaml;
   kubectl delete -f local-storage.yaml;
-  

@@ -9,7 +9,12 @@ services:
       kompose.volume.size: 15Gi
       kompose.service.expose: "{{ .Values.host }}"
       kompose.service.expose.ingress-class-name: "nginx"
+      kompose.service.expose.tls-secret: "argiago-registry-prod-secret"
+      cert-manager.io/cluster-issuer: letsencrypt-prod
       nginx.ingress.kubernetes.io/proxy-body-size: "0"
+      nginx.org/configuration-snippet: |
+        proxy_body_size 0;
+        client_max_body_size 0;
     ports:
       - 80:5000
     environment:
@@ -24,7 +29,6 @@ services:
     secrets:
       - source: registry-auth
         target: /auth/htpasswd
-      
 
 configs:
   registry-conf:
